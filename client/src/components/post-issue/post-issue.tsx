@@ -2,7 +2,7 @@ import React from 'react'
 import { SubmitHandler, useForm } from 'react-hook-form'
 
 /* eslint-disable @typescript-eslint/no-misused-promises */
-import { useMutation } from '@tanstack/react-query'
+import { useMutation, useQueryClient } from '@tanstack/react-query'
 
 type NewIssue = {
   title: string
@@ -10,6 +10,8 @@ type NewIssue = {
 }
 
 function PostIssue() {
+  const query = useQueryClient()
+
   const {
     formState: { errors },
     handleSubmit,
@@ -31,6 +33,9 @@ function PostIssue() {
             'Content-Type': 'application/json',
           },
           body: JSON.stringify(params),
+        })
+        await query.invalidateQueries({
+          queryKey: ['getAllIssues'],
         })
       } catch (error) {
         console.log('error :>> ', error)
