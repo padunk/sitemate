@@ -33,9 +33,23 @@ function AllIssue({}: Props) {
   const status = allIssues.status
   return (
     <div>
-      <h2>All Issues</h2>
+      <h2 className='text-2xl'>All Issues</h2>
       {status === 'success' ? (
-        <div></div>
+        <div>
+          {allIssues.data && allIssues.data?.length > 0 ? (
+            <ul>
+              {allIssues.data.map((issue) => {
+                return (
+                  <li key={issue.id}>
+                    {issue.title} - {issue.description}
+                  </li>
+                )
+              })}
+            </ul>
+          ) : (
+            <div>No Issues, please create one</div>
+          )}
+        </div>
       ) : status === 'pending' ? (
         <div>Loading...</div>
       ) : (
