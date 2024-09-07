@@ -44,8 +44,8 @@ func main() {
 
 	v1.Post("/issues", createIssue)
 	v1.Get("/issues", getAllIssue)
-	v1.Patch("/issues:id", updateIssue)
-	v1.Delete("/issues:id", deleteIssue)
+	v1.Patch("/issues/:id", updateIssue)
+	v1.Delete("/issues/:id", deleteIssue)
 
 	log.Fatal(app.Listen(":8080"))
 }
@@ -60,9 +60,9 @@ func createTable() {
 func createIssue(c *fiber.Ctx) error {
 	issue := new(Issue)
 	if err := c.BodyParser(issue); err != nil {
-		return err
+		return c.Status(fiber.StatusBadRequest).
+			JSON(fiber.Map{"error": "invalid request body"})
 	}
-	log.Printf("Creating issue: %+v", issue)
 
 	_, err := db.Exec("INSERT INTO issues (title, description) VALUES (?, ?)", issue.Title, issue.Description)
 	if err != nil {
